@@ -19,8 +19,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 
     // Create an in-memory FILE
     uint8_t buff[size];
-    memset(buff, 0, size);
-
     f = fmemopen(buff, size, "wb");
 
     GifBegin(&g, f, w, h, delay);
