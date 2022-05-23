@@ -1,7 +1,7 @@
 #include <cstdio> // FILE, fmemopen
 #include "gif.h"
 
-#define MAX_DATA_SIZE = sizeof(uint8_t) * 256 * 256 * 4
+#define MAX_DATA_SIZE (sizeof(uint8_t) * 256 * 256 * 4)
 
 uint8_t* buff = (uint8_t*) malloc(MAX_DATA_SIZE);
 
