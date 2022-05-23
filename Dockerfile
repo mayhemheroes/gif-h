@@ -1,5 +1,5 @@
 # Build Stage
-FROM fuzzers/aflplusplus:3.12c as builder
+FROM --platform=linux/amd64 ubuntu:20.04 as builder
 
 ## Install build dependencies.
 RUN apt-get update && \
@@ -15,12 +15,12 @@ RUN git checkout mayhem
 RUN clang++ -DBUILD_FUZZER=1 -fsanitize=fuzzer fuzz.cc gif.h
 
 # Package Stage
-FROM fuzzers/aflplusplus:3.12c
+RUN mkdir /corpus
+FROM --platform=linux/amd64 ubuntu:20.04
 COPY --from=builder /gif-h/a.out /fuzz-gif
+COPY --from=builder /gif-h/corpus /corpus
 
-## Debugging corpus
-RUN mkdir /tests && echo seed > /tests/seed
 
 ## Set up fuzzing!
-ENTRYPOINT ["afl-fuzz", "-i", "/tests", "-o", "/out"]
-CMD ["/packcc"]
+ENTRYPOINT []
+CMD /fuzz-gif /corpus -close_fd_mask=2
