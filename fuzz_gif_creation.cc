@@ -1,5 +1,6 @@
 #include <cstdio> // FILE, fmemopen
 #include "gif.h"
+#include "fuzz.h" // Specific override of GifBegin for fuzzing efficiency
 
 #define MAX_DATA_SIZE (sizeof(uint8_t) * 256 * 256 * 4)
 
@@ -24,7 +25,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     // Create an in-memory FILE
     f = fmemopen(buff, size, "wb");
 
-    GifBegin(&g, f, w, h, delay);
+    GifBegin_fuzz(&g, f, w, h, delay);
     GifWriteFrame(&g, data, w, h, delay);
     GifEnd(&g);
 

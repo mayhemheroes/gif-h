@@ -3,24 +3,23 @@ FROM --platform=linux/amd64 ubuntu:20.04 as builder
 
 ## Install build dependencies.
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y cmake clang git build-essential
+    DEBIAN_FRONTEND=noninteractive apt-get install -y cmake clang build-essential
 
 ## Add source code to the build stage.
 WORKDIR /
-RUN git clone https://github.com/capuanob/gif-h.git
+ADD . /gif-h
 WORKDIR /gif-h
-RUN git checkout mayhem
 
 ## Build
-RUN clang++ -DBUILD_FUZZER=1 -fsanitize=fuzzer fuzz.cc gif.h
+RUN clang++ -fsanitize=fuzzer fuzz_gif_creation.cc gif.h fuzz.h
 
 # Package Stage
-RUN mkdir /corpus
+RUN mkdir /testsuite
 FROM --platform=linux/amd64 ubuntu:20.04
 COPY --from=builder /gif-h/a.out /fuzz-gif
-COPY --from=builder /gif-h/corpus /corpus
+COPY --from=builder /gif-h/testsuite /testsuite
 
 
 ## Set up fuzzing!
 ENTRYPOINT []
-CMD /fuzz-gif /corpus -close_fd_mask=2
+CMD /fuzz-gif /testsuite
