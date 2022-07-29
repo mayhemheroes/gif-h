@@ -11,7 +11,7 @@ ADD . /gif-h
 WORKDIR /gif-h
 
 ## Build
-RUN clang++ -fsanitize=fuzzer fuzz_gif_creation.cc gif.h fuzz.h
+RUN clang++ -fsanitize=fuzzer fuzz_gif_creation.cc gif.h
 
 # Package Stage
 RUN mkdir /testsuite
